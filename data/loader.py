@@ -20,21 +20,44 @@ def parse_file(filename):
     gt = []
     plots = []
     idx = []
+    Truecount = 0
+    Falsecount = 0
+    Abstaincount = 0
     for i,movie in enumerate(f):
         genre = movie['Genre']
-        if 'Action' in genre and 'Romance' in genre:
-            continue
-        elif 'Action' in genre:
-            plots = plots+[movie['Plot']]
-            gt.append(1)
-            idx.append(i)
-        elif 'Romance' in genre:
-            plots = plots+[movie['Plot']]
-            gt.append(-1)
-            idx.append(i)
+        if 'Action' in genre:
+            #Abstain
+            if genre.count(',') < 2:
+                plots = plots+[movie['Plot']]
+                gt.append(0)
+                idx.append(i)
+                Abstaincount = Abstaincount + 1
+            #True
+            else:
+                plots = plots+[movie['Plot']]
+                gt.append(1)
+                idx.append(i)
+                Truecount = Truecount + 1
+            
         else:
-            continue  
-    
+            #Abstain
+            if 'Adventure' in genre:
+                plots = plots+[movie['Plot']]
+                gt.append(0)
+                idx.append(i)
+                Abstaincount = Abstaincount + 1
+            #False
+            else:
+                plots = plots+[movie['Plot']]
+                gt.append(-1)
+                idx.append(i) 
+                Falsecount = Falsecount + 1
+
+
+    print('True Count = ', Truecount)
+    print('False Count = ', Falsecount)
+    print('Abstain Count = ', Abstaincount)
+
     return np.array(plots), np.array(gt)
 
 def split_data(X, plots, y):
